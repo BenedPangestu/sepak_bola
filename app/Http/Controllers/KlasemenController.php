@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateKlasemenRequest;
 use App\Models\KlubBola;
 use App\Models\Riwayat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class KlasemenController extends Controller
 {
@@ -52,7 +53,19 @@ class KlasemenController extends Controller
                 'score_klub2' => $request->score_klub2[$i],
             ]);
         }
+        
         foreach ($data as $item) {
+            $valid = Validator::make($item, [
+                    'klub_1' => 'required',
+                    'score_klub1' => 'required',
+                    'klub_2' => 'required',
+                    'score_klub2' => 'required',
+            ]);
+            if ($valid->fails()) {
+                return redirect('admin/klasemen')
+                        ->withErrors($valid)
+                        ->withInput();
+            }
             if ($item['klub_1'] == $item['klub_2']) {
                 return redirect('admin/klasemen')
                     ->withErrors("Klub tidak bisa sama")
@@ -82,7 +95,7 @@ class KlasemenController extends Controller
                             'seri' => 0,
                             'bermain' => 1,
                             'goal_menang' => $item['score_klub1'],
-                            'goal_kalah' => 0,
+                            'goal_kalah' => $item['score_klub2'],
                             'point' => 3
                         ]);
                     } else {
@@ -90,6 +103,7 @@ class KlasemenController extends Controller
                         $Klasmenmenang->bermain = ($Klasmenmenang->bermain + 1);
                         $Klasmenmenang->point = ($Klasmenmenang->point + 3);
                         $Klasmenmenang->goal_menang = ($Klasmenmenang->goal_menang + $item['score_klub1']);
+                        $Klasmenmenang->goal_kalah = ($Klasmenmenang->goal_kalah + $item['score_klub2']);
                         $Klasmenmenang->save();
                     }
                     // klub 2 kalah
@@ -102,20 +116,20 @@ class KlasemenController extends Controller
                             'seri' => 0,
                             'bermain' => 1,
                             'point' => 0,
-                            'goal_menang' => 0,
-                            'goal_kalah' => $item['score_klub2']
+                            'goal_menang' => $item['score_klub2'],
+                            'goal_kalah' => $item['score_klub1']
                         ]);
                     } else {
                         $klasemenKalah->kalah = ($klasemenKalah->kalah + 1);
                         $klasemenKalah->bermain = ($klasemenKalah->bermain + 1);
-                        $klasemenKalah->goal_kalah = ($klasemenKalah->goal_kalah + $item['score_klub2']);
+                        $klasemenKalah->goal_menang = ($klasemenKalah->goal_menang + $item['score_klub2']);
+                        $klasemenKalah->goal_kalah = ($klasemenKalah->goal_kalah + $item['score_klub1']);
                         $klasemenKalah->save();
                     }
                 } else if($item['score_klub2'] > $item['score_klub1']){
                     // klub 2 menang
                     $Klasmenmenang = Klasemen::where('id_klub',$item['klub_2'])->first();
                     if ($Klasmenmenang == null) {
-
                         $klasemen[] = Klasemen::Create([
                             'id_klub' => $item['klub_2'],
                             'menang' => 1,
@@ -123,15 +137,15 @@ class KlasemenController extends Controller
                             'seri' => 0,
                             'bermain' => 1,
                             'goal_menang' => $item['score_klub2'],
-                            'goal_kalah' => 0,
+                            'goal_kalah' => $item['score_klub1'],
                             'point' => 3
                         ]);
                     } else {
-
                         $Klasmenmenang->menang = ($Klasmenmenang->menang + 1);
                         $Klasmenmenang->bermain = ($Klasmenmenang->bermain + 1);
                         $Klasmenmenang->point = ($Klasmenmenang->point + 3);
                         $Klasmenmenang->goal_menang = ($Klasmenmenang->goal_menang + $item['score_klub2']);
+                        $Klasmenmenang->goal_kalah = ($Klasmenmenang->goal_kalah + $item['score_klub1']);
                         $Klasmenmenang->save();
                     }
                     // klub 1 kalah
@@ -144,13 +158,14 @@ class KlasemenController extends Controller
                             'seri' => 0,
                             'bermain' => 1,
                             'point' => 0,
-                            'goal_menang' => 0,
-                            'goal_kalah' => $item['score_klub1']
+                            'goal_menang' => $item['score_klub1'],
+                            'goal_kalah' => $item['score_klub2']
                         ]);
                     } else {
                         $klasemenKalah->kalah = ($klasemenKalah->kalah + 1);
                         $klasemenKalah->bermain = ($klasemenKalah->bermain + 1);
-                        $klasemenKalah->goal_kalah = ($klasemenKalah->goal_kalah + $item['score_klub1']);
+                        $klasemenKalah->goal_menang = ($klasemenKalah->goal_menang + $item['score_klub1']);
+                        $klasemenKalah->goal_kalah = ($klasemenKalah->goal_kalah + $item['score_klub2']);
                         $klasemenKalah->save();
                     }
                 } else {
@@ -164,7 +179,7 @@ class KlasemenController extends Controller
                             'seri' => 1,
                             'bermain' => 1,
                             'goal_menang' => $item['score_klub2'],
-                            'goal_kalah' => 0,
+                            'goal_kalah' => $item['score_klub1'],
                             'point' => 1
                         ]);
                     } else {
@@ -172,6 +187,7 @@ class KlasemenController extends Controller
                         $Klasmenmenang->bermain = ($Klasmenmenang->bermain + 1);
                         $Klasmenmenang->point = ($Klasmenmenang->point + 1);
                         $Klasmenmenang->goal_menang = ($Klasmenmenang->goal_menang + $item['score_klub2']);
+                        $Klasmenmenang->goal_kalah = ($Klasmenmenang->goal_kalah + $item['score_klub1']);
                         $Klasmenmenang->save();
                     }
                     // klub 1 seri
@@ -185,7 +201,7 @@ class KlasemenController extends Controller
                             'seri' => 1,
                             'bermain' => 1,
                             'goal_menang' => $item['score_klub1'],
-                            'goal_kalah' => 0,
+                            'goal_kalah' => $item['score_klub2'],
                             'point' => 1,
                         ]);
                     } else {
@@ -194,6 +210,7 @@ class KlasemenController extends Controller
                         $klasemenKalah->bermain = ($klasemenKalah->bermain + 1);
                         $klasemenKalah->point = ($klasemenKalah->point + 1);
                         $klasemenKalah->goal_menang = ($klasemenKalah->goal_menang + $item['score_klub1']);
+                        $klasemenKalah->goal_kalah = ($klasemenKalah->goal_kalah + $item['score_klub2']);
                         $klasemenKalah->save();
                     }
                 }

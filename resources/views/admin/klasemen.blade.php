@@ -93,6 +93,15 @@
                 <!-- Hover Table -->
                 <div class="block">
                     <div class="block-content">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <table class="table table-hover table-vcenter">
                             <thead>
                                 <tr>
