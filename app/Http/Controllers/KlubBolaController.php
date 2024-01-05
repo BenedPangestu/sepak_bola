@@ -53,13 +53,14 @@ class KlubBolaController extends Controller
                         ->withErrors($valid)
                         ->withInput();
         }
-        $filename = time()."-Klub".$request->gambar->extension();
+        $filename = time()."-Klub".'.'.$request->gambar->extension();
+        $request->file('gambar')->move('assets/media/klub', $filename);
         $create = KlubBola::create([
             'nama' => $request->nama,
             'kota_asal' => $request->kota_asal,
             'gambar' => $filename,
         ]);
-        $request->gambar->move(public_path('asssets/media/klub'), $filename);
+        // $request->gambar->move(public_path('asssets/media/klub'), $filename);
         return redirect()->route('admin.klub');
     }
 

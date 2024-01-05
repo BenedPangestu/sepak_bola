@@ -7,6 +7,7 @@ use App\Http\Requests\StoreKlasemenRequest;
 use App\Http\Requests\UpdateKlasemenRequest;
 use App\Models\KlubBola;
 use App\Models\Riwayat;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,10 +18,20 @@ class KlasemenController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $klasemen = Klasemen::with('klub')->orderBy('point', 'desc')->get();
 
+        if ($request->has('stream')) {
+            $data = [
+                'title' => 'PDF Klasemen',
+                'date' => date('d/m/Y'),
+                'klasemen' => $klasemen
+            ];
+            $pdf = Pdf::loadView('klasemenPdf', $data);
+            return $pdf->stream('klasemen'.time().'.pdf');
+        }
+        
         return view('admin.klasemen', compact('klasemen'));
     }
 

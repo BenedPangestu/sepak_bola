@@ -45,7 +45,7 @@
 
     <div id="page-container"
         class="sidebar-o sidebar-inverse enable-page-overlay side-scroll page-header-glass page-header-inverse main-content-boxed">
-        
+
         {{-- sidebar --}}
         @include('includes.admin.sidebar')
         {{-- end sidebar --}}
@@ -83,39 +83,87 @@
 
             <!-- Page Content -->
             <div class="content">
-                <!-- Multiple Items -->
-                <div class="block">
-                    <div class="block-header block-header-default">
-                        <h3 class="block-title">Daftar Klub Bola</h3>
-                        <a href="{{route('admin.klub.input')}}" type="button" class="btn btn-primary btn-sm btn-alt-primary">
-                            <i class="fa fa-plus mr-1"></i> Tambah klub
-                        </a>
-                    </div>
+                <!-- Page Content -->
+                <div class="block block-rounded block-fx-shadow">
                     <div class="block-content">
-                        <div id="accordion2" role="tablist" aria-multiselectable="true">
-                            <?php 
-                                $no = 1;    
-                            ?>
-                            @foreach ($klub as $item)
-                                <?php 
-                                    $no++;
-                                ?>
-                                <div class="block block-bordered block-rounded mb-2">
-                                    <div class="block-header" role="tab" id="accordion2_h1">
-                                        <a class="font-w600" data-toggle="collapse" data-parent="#accordion2" href="#accordion2_q{{$no}}" aria-expanded="true" aria-controls="accordion2_q{{$no}}">{{$item->nama}}</a>
-                                    </div>
-                                    <div id="accordion2_q{{$no}}" class="collapse" role="tabpanel" aria-labelledby="accordion2_h1">
-                                        <div class="block-content">
-                                            <img src="{{asset('assets/media/klub/'. $item->gambar)}}" class="img img-avatar">
-                                            <p>Persija dengan kota asal {{$item->kota_asal}}</p>
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <form method="POST" action="{{route('admin.pemainbola.store')}}" enctype="multipart/form-data" >
+                            @csrf
+                            <!-- Photos -->
+                            <h2 class="content-heading text-black">File Excel</h2>
+                            <div class="row items-push">
+                                <div class="col-lg-3">
+                                    <p class="text-muted">
+                                        Add nice and clean excel to better showcase your Klub Bola
+                                    </p>
+                                </div>
+                                <div class="col-lg-7 offset-lg-1">
+                                    <div class="form-group">
+                                        <div class="custom-file form">
+                                            <!-- Populating custom file input label with the selected filename (data-toggle="custom-file-input" is initialized in Helpers.coreBootstrapCustomFileInput()) -->
+                                            <!-- When multiple files are selected, we use the word 'Files'. You can easily change it to your own language by adding the following to the input, eg for DE: data-lang-files="Dateien" -->
+                                            <input type="file" class="custom-file-input" id="re-listing-photos"
+                                                name="file" data-toggle="custom-file-input" multiple>
+                                            <label class="custom-file-label" for="re-listing-photos">Choose
+                                                files</label>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
+                            </div>
+                            <!-- END Photos -->
+
+                            <!-- Contact Info -->
+                            {{-- <h2 class="content-heading text-black">Infomation Klub Bola</h2>
+                            <div class="row items-push">
+                                <div class="col-lg-3">
+                                    <p class="text-muted">
+                                        How can your supporter reach you?
+                                    </p>
+                                </div>
+                                <div class="col-lg-7 offset-lg-1">
+                                    <div class="form-group row">
+                                        <div class="col-md-8">
+                                            <label for="re-listing-email">Nama Klub</label>
+                                            <input type="text" class="form-control form-control-lg"
+                                                id="nama" name="nama">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-8">
+                                            <label for="re-listing-phone">Kota Asal</label>
+                                            <input type="text" class="form-control form-control-lg"
+                                                id="kota_asal" name="kota_asal">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> --}}
+                            <!-- END Contact Info -->
+
+                            <!-- Form Submission -->
+                            <div class="row items-push">
+                                <div class="col-lg-7 offset-lg-4">
+                                    <div class="form-group">
+                                        <button id="submit" type="submit" class="btn btn-alt-success">
+                                            <i class="fa fa-plus mr-5"></i>
+                                            Add Klub
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END Form Submission -->
+                        </form>
                     </div>
                 </div>
-                <!-- END Multiple Items -->
+                <!-- END Page Content -->
+
             </div>
             <!-- END Page Content -->
 
@@ -160,6 +208,22 @@
 
     <!-- Page JS Code -->
     <script src="{{ asset('assets/js/pages/be_pages_ecom_dashboard.min.js') }}"></script>
+    <script>  
+        // $(document).ready(function(){  
+        //      $('#submit').click(function(){            
+        //           $.ajax({  
+        //                url:"{{route('admin.klub.store')}}",  
+        //                method:"POST",  
+        //                data:$('#add_klub').serialize(),  
+        //                success:function(data)  
+        //                {  
+        //                     console.log(data);
+        //                     alert(data);  
+        //                }  
+        //           });  
+        //      });  
+        // });  
+    </script>
 </body>
 
 </html>

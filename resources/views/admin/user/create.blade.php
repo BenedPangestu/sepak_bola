@@ -45,7 +45,7 @@
 
     <div id="page-container"
         class="sidebar-o sidebar-inverse enable-page-overlay side-scroll page-header-glass page-header-inverse main-content-boxed">
-        
+
         {{-- sidebar --}}
         @include('includes.admin.sidebar')
         {{-- end sidebar --}}
@@ -75,7 +75,8 @@
                 <div class="content py-5 text-center">
                     <nav class="breadcrumb bg-body-light mb-0">
                         <a class="breadcrumb-item" href="{{ route('index') }}">Score Pangestu</a>
-                        <span class="breadcrumb-item active">Klub</span>
+                        <a class="breadcrumb-item" href="{{ route('admin.user') }}">User</a>
+                        <span class="breadcrumb-item active">create</span>
                     </nav>
                 </div>
             </div>
@@ -83,39 +84,86 @@
 
             <!-- Page Content -->
             <div class="content">
-                <!-- Multiple Items -->
-                <div class="block">
-                    <div class="block-header block-header-default">
-                        <h3 class="block-title">Daftar Klub Bola</h3>
-                        <a href="{{route('admin.klub.input')}}" type="button" class="btn btn-primary btn-sm btn-alt-primary">
-                            <i class="fa fa-plus mr-1"></i> Tambah klub
-                        </a>
-                    </div>
+                <!-- Page Content -->
+                <div class="block block-rounded block-fx-shadow">
                     <div class="block-content">
-                        <div id="accordion2" role="tablist" aria-multiselectable="true">
-                            <?php 
-                                $no = 1;    
-                            ?>
-                            @foreach ($klub as $item)
-                                <?php 
-                                    $no++;
-                                ?>
-                                <div class="block block-bordered block-rounded mb-2">
-                                    <div class="block-header" role="tab" id="accordion2_h1">
-                                        <a class="font-w600" data-toggle="collapse" data-parent="#accordion2" href="#accordion2_q{{$no}}" aria-expanded="true" aria-controls="accordion2_q{{$no}}">{{$item->nama}}</a>
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <form method="POST" action="{{route('admin.user.store')}}" enctype="multipart/form-data">
+                            @csrf
+                            
+                            <!-- Contact Info -->
+                            <h2 class="content-heading text-black">Infomation User</h2>
+                            <div class="row items-push">
+                                <div class="col-lg-3">
+                                    <p class="text-muted">
+                                        How can insert your data?
+                                    </p>
+                                </div>
+                                <div class="col-lg-7 offset-lg-1">
+                                    <div class="form-group row">
+                                        <div class="col-md-8">
+                                            <label for="re-listing-email">Username</label>
+                                            <input type="text" class="form-control form-control-lg"
+                                                id="username" name="username">
+                                        </div>
                                     </div>
-                                    <div id="accordion2_q{{$no}}" class="collapse" role="tabpanel" aria-labelledby="accordion2_h1">
-                                        <div class="block-content">
-                                            <img src="{{asset('assets/media/klub/'. $item->gambar)}}" class="img img-avatar">
-                                            <p>Persija dengan kota asal {{$item->kota_asal}}</p>
+                                    <div class="form-group row">
+                                        <div class="col-md-8">
+                                            <label for="re-listing-email">Email</label>
+                                            <input type="text" class="form-control form-control-lg"
+                                                id="email" name="email">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-8">
+                                            <label for="re-listing-phone">Password</label>
+                                            <input type="password" class="form-control form-control-lg"
+                                                id="password" name="password">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-8">
+                                            <label for="re-listing-phone">Password Confirm</label>
+                                            <input type="password" class="form-control form-control-lg"
+                                                id="password-confirm" name="password-confirm">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-8">
+                                            <label for="re-listing-phone">Role</label>
+                                            <input type="text" class="form-control form-control-lg"
+                                                id="role" name="role" value="staf" disabled>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
+                            </div>
+                            <!-- END Contact Info -->
+
+                            <!-- Form Submission -->
+                            <div class="row items-push">
+                                <div class="col-lg-7 offset-lg-4">
+                                    <div class="form-group">
+                                        <button id="submit" type="submit" class="btn btn-alt-success">
+                                            <i class="fa fa-plus mr-5"></i>
+                                            Add User
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END Form Submission -->
+                        </form>
                     </div>
                 </div>
-                <!-- END Multiple Items -->
+                <!-- END Page Content -->
+
             </div>
             <!-- END Page Content -->
 
@@ -160,6 +208,7 @@
 
     <!-- Page JS Code -->
     <script src="{{ asset('assets/js/pages/be_pages_ecom_dashboard.min.js') }}"></script>
+    
 </body>
 
 </html>

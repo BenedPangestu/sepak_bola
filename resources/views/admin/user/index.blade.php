@@ -75,7 +75,7 @@
                 <div class="content py-5 text-center">
                     <nav class="breadcrumb bg-body-light mb-0">
                         <a class="breadcrumb-item" href="{{ route('index') }}">Score Pangestu</a>
-                        <span class="breadcrumb-item active">Klub</span>
+                        <span class="breadcrumb-item active">user</span>
                     </nav>
                 </div>
             </div>
@@ -83,39 +83,63 @@
 
             <!-- Page Content -->
             <div class="content">
-                <!-- Multiple Items -->
+
+                <div class="content-heading">
+                    user <small class="d-none d-sm-inline">score pangestu</small>
+                    <a href="{{route('admin.user.input')}}" type="button" class="btn btn-primary btn-sm btn-alt-primary float-right">
+                        <i class="fa fa-plus mr-1"></i> Tambah User
+                    </a>
+                </div>
+                <!-- Hover Table -->
                 <div class="block">
-                    <div class="block-header block-header-default">
-                        <h3 class="block-title">Daftar Klub Bola</h3>
-                        <a href="{{route('admin.klub.input')}}" type="button" class="btn btn-primary btn-sm btn-alt-primary">
-                            <i class="fa fa-plus mr-1"></i> Tambah klub
-                        </a>
-                    </div>
                     <div class="block-content">
-                        <div id="accordion2" role="tablist" aria-multiselectable="true">
-                            <?php 
-                                $no = 1;    
-                            ?>
-                            @foreach ($klub as $item)
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <table id="table-user" class="table table-hover table-vcenter">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">No</th>
+                                    <th class="text-center" style="">Username</th>
+                                    <th class="text-center" style="">Email</th>
+                                    <th class="text-center" style="">Role</th>
+                                    <th class="text-center" style="">Dibuat</th>
+                                    <th class="text-center" style="width: 200px">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 <?php 
-                                    $no++;
+                                    $no = 0;
                                 ?>
-                                <div class="block block-bordered block-rounded mb-2">
-                                    <div class="block-header" role="tab" id="accordion2_h1">
-                                        <a class="font-w600" data-toggle="collapse" data-parent="#accordion2" href="#accordion2_q{{$no}}" aria-expanded="true" aria-controls="accordion2_q{{$no}}">{{$item->nama}}</a>
-                                    </div>
-                                    <div id="accordion2_q{{$no}}" class="collapse" role="tabpanel" aria-labelledby="accordion2_h1">
-                                        <div class="block-content">
-                                            <img src="{{asset('assets/media/klub/'. $item->gambar)}}" class="img img-avatar">
-                                            <p>Persija dengan kota asal {{$item->kota_asal}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
+                                @foreach ($user as $item)
+                                <?php $no++; ?>
+                                <tr>
+                                    <th class="text-center" >{{$no}}</th>
+                                    <th class="text-center" >{{$item->username}}</th>
+                                    <th class="text-center" >{{$item->email}}</th>
+                                    <th class="text-center" >{{$item->role}}</th>
+                                    <th class="text-center" >{{$item->created_at}}</th>
+                                    <th class="text-center" >
+                                        <a href="{{route('admin.user.edit', $item->id)}}" class="btn btn-info">Update</a>
+                                        <form action="{{route('admin.user.delete', $item->id)}}" method="post">
+                                            @csrf
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                            {{-- <a href="{{route('admin.user.delete', $item->id)}}">Delete</a> --}}
+                                        </form>
+                                    </th>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <!-- END Multiple Items -->
+                <!-- END Hover Table -->
             </div>
             <!-- END Page Content -->
 
@@ -160,6 +184,13 @@
 
     <!-- Page JS Code -->
     <script src="{{ asset('assets/js/pages/be_pages_ecom_dashboard.min.js') }}"></script>
+    <script src="{{asset('assets/js/plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('assets/js/plugins/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <script>
+         $(document).ready(function () {
+            $('#table-user').DataTable();
+        });
+    </script>
 </body>
 
 </html>

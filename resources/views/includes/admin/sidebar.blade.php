@@ -82,6 +82,16 @@
                     <a href="{{route('admin.klub')}}"><i class="fa fa-soccer-ball-o"></i><span
                             class="sidebar-mini-hide">Klub</span></a>
                 </li>
+                @if (Auth::user()->role == 'admin')
+                    <li>
+                        <a href="{{route('admin.pemainbola')}}"><i class="fa fa-group"></i><span
+                                class="sidebar-mini-hide">Pemain</span></a>
+                    </li>
+                    <li>
+                        <a href="{{route('admin.user')}}"><i class="fa fa-user"></i><span
+                                class="sidebar-mini-hide">User</span></a>
+                    </li>
+                @endif
             </ul>
         </div>
     </div>

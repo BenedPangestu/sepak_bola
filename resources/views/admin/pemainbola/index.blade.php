@@ -75,7 +75,7 @@
                 <div class="content py-5 text-center">
                     <nav class="breadcrumb bg-body-light mb-0">
                         <a class="breadcrumb-item" href="{{ route('index') }}">Score Pangestu</a>
-                        <span class="breadcrumb-item active">Klub</span>
+                        <span class="breadcrumb-item active">Klasemen</span>
                     </nav>
                 </div>
             </div>
@@ -83,39 +83,59 @@
 
             <!-- Page Content -->
             <div class="content">
-                <!-- Multiple Items -->
+
+                <div class="content-heading">
+                    Pemain Bola <small class="d-none d-sm-inline">score pangestu</small>
+                    <a href="{{route('admin.pemainbola.input')}}" type="button" class="btn btn-primary btn-sm btn-alt-primary float-right ml-2">
+                        <i class="fa fa-plus mr-1"></i> Tambah Pemain
+                    </a>
+                    <a href="{{route('admin.pemainbola.cetak')}}" type="button" class="btn btn-primary btn-sm btn-alt-primary float-right ml-2">
+                        <i class="fa fa-print mr-1"></i> Cetak Excel
+                    </a>
+                    
+                </div>
+                <!-- Hover Table -->
                 <div class="block">
-                    <div class="block-header block-header-default">
-                        <h3 class="block-title">Daftar Klub Bola</h3>
-                        <a href="{{route('admin.klub.input')}}" type="button" class="btn btn-primary btn-sm btn-alt-primary">
-                            <i class="fa fa-plus mr-1"></i> Tambah klub
-                        </a>
-                    </div>
                     <div class="block-content">
-                        <div id="accordion2" role="tablist" aria-multiselectable="true">
-                            <?php 
-                                $no = 1;    
-                            ?>
-                            @foreach ($klub as $item)
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <table id="table-pemain" class="table table-hover table-vcenter">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">No</th>
+                                    <th class="d-none d-sm-table-cell" style="width: 15%;">Pemain</th>
+                                    <th class="text-center" style="width: auto;">Nomor</th>
+                                    <th class="text-center" style="width: auto;">Posisi</th>
+                                    <th class="text-center" style="width: auto;">Klub</th>
+                                    {{-- <th class="text-center" style="width: auto;">Actions</th> --}}
+                                </tr>
+                            </thead>
+                            <tbody>
                                 <?php 
-                                    $no++;
+                                    $no = 0;
                                 ?>
-                                <div class="block block-bordered block-rounded mb-2">
-                                    <div class="block-header" role="tab" id="accordion2_h1">
-                                        <a class="font-w600" data-toggle="collapse" data-parent="#accordion2" href="#accordion2_q{{$no}}" aria-expanded="true" aria-controls="accordion2_q{{$no}}">{{$item->nama}}</a>
-                                    </div>
-                                    <div id="accordion2_q{{$no}}" class="collapse" role="tabpanel" aria-labelledby="accordion2_h1">
-                                        <div class="block-content">
-                                            <img src="{{asset('assets/media/klub/'. $item->gambar)}}" class="img img-avatar">
-                                            <p>Persija dengan kota asal {{$item->kota_asal}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
+                                @foreach ($pemainbola as $item)
+                                <?php $no++; ?>
+                                <tr>
+                                    <th class="text-center" scope="row">{{$no}}</th>
+                                    <td class="text-center" scope="row">{{$item->nama_pemain}}</td>
+                                    <td class="text-center" scope="row">{{$item->nomor_punggung}}</td>
+                                    <td class="text-center" scope="row">{{$item->posisi}}</td>
+                                    <td class="text-center" scope="row">{{$item->klub->nama}}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <!-- END Multiple Items -->
+                <!-- END Hover Table -->
             </div>
             <!-- END Page Content -->
 
@@ -160,6 +180,13 @@
 
     <!-- Page JS Code -->
     <script src="{{ asset('assets/js/pages/be_pages_ecom_dashboard.min.js') }}"></script>
+    <script src="{{asset('assets/js/plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('assets/js/plugins/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <script>
+         $(document).ready(function () {
+            $('#table-pemain').DataTable();
+        });
+    </script>
 </body>
 
 </html>
